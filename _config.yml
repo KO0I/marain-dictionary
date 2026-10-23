@@ -1,0 +1,6 @@
+title: Marain Dictionary
+url: ""
+baseurl: ""
+markdown: kramdown
+include: [_pages]
+exclude: [README.md, Gemfile, Gemfile.lock, package.json, tests, scripts, vendor]

@@ -1,0 +1,8 @@
+{
+  "name": "marain-dictionary",
+  "private": true,
+  "scripts": {
+    "test": "node scripts/check-js.mjs && node --test tests/*.test.cjs tests/*.test.mjs"
+  },
+  "engines": { "node": ">=22" }
+}

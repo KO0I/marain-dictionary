@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title | default: site.title | escape }} — Marain Dictionary</title>
+  <link rel="stylesheet" href="{{ '/assets/marain/css/marain.css' | relative_url }}">
+  <style>body { max-width: 72rem; margin: 2rem auto; padding: 0 1rem; font: 18px/1.6 system-ui, sans-serif; } input, textarea, select, button { font: inherit; } table { border-collapse: collapse; } td, th { padding: .3rem .7rem; }</style>
+</head>
+<body>
+  <nav><a href="{{ '/marain/' | relative_url }}">Dictionary</a> · <a href="{{ '/lesson-rules/' | relative_url }}">Lesson rules</a></nav>
+  <main id="main-content">{{ content }}</main>
+  {% if page.url == '/marain/' or page.marain_tts %}{% include marain-tts.html %}{% endif %}
+</body>
+</html>
