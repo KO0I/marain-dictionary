@@ -91,7 +91,7 @@ test('glyph and romanisation boundaries round-trip for every single-word diction
 });
 
 test('11 sourced additions, no duplicate existing headwords or unknown glyphs',()=>{
-  assert.equal(Object.keys(scope.dict).length,465);
+  assert.equal(Object.keys(scope.dict).length,467);
   const additions=Object.values(scope.dict).filter(e=>e.status==='community-lesson');
   assert.equal(additions.length,11);
   assert.ok(additions.every(e=>e.source&&e.en.length));
@@ -206,7 +206,7 @@ test('v0.3 lexical additions are explicitly proposed and do not replace recovere
     assert.ok(scope.dict[key].source.includes('v0.3'));
     assert.equal(api.encode(api.romanize(key)),key);
   }
-  assert.equal(Object.keys(scope.dict).length,465);
+  assert.equal(Object.keys(scope.dict).length,467);
   assert.equal(scope.dict.lemi.gloss,'sense[v]');
   assert.equal(scope.dict.wolOg.gloss,'plan[n]');
 });
@@ -287,7 +287,7 @@ test('v0.4 ship names and Gaelic loan words stay explicitly proposed',()=>{
     assert.equal(api.romanize(key),roman,key);
     assert.equal(api.encode(roman),key,key);
   }
-  assert.equal(Object.keys(scope.dict).length,465);
+  assert.equal(Object.keys(scope.dict).length,467);
 });
 test('poetic cadences rhyme without changing predicate semantics',()=>{
   for(const [stem,kind,cadence,roman,glyphKey] of [
@@ -351,4 +351,23 @@ test('Poetry sections are absent from the Marain page; core language tools remai
   assert.ok(tabs.includes("if (orbitals) tabNames.push('Orbitals & Habs')"));
   assert.ok(tabs.includes("tabNames.push('Dictionary', 'Alphabet', 'Base conversion')"));
   assert.ok(page.includes('phrase-translator.js'));
+});
+
+
+test('spacecraft hangar, bay and deck reuse recovered vocabulary',()=>{
+  for(const [key,english,roots] of [
+    ['prenfwEstheldjt','hangar',['pren','fwEst','heldjt']],
+    ['fwEstzesO','bay',['fwEst','zesO']]
+  ]){
+    const entry=scope.dict[key];
+    assert.equal(entry.status,'proposed-extension',key);
+    assert.ok(entry.source && entry.derivation && entry.note,key);
+    assert.ok(roots.every(root=>scope.dict[root]),key);
+    assert.equal(api.encode(api.romanize(key)),key);
+    assert.equal(tr(english).roman,api.romanize(key),english);
+  }
+  assert.equal(scope.dict.mag.gloss,'floor');
+  assert.ok(scope.dict.mag.en.includes('deck'));
+  assert.ok(scope.dict.mag.extension_note.includes('not independently attested'));
+  assert.equal(tr('deck').roman,api.romanize('mag'));
 });

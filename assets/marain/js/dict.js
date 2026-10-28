@@ -120,7 +120,7 @@ var dict = {
 "pomlEGEGedil": {"pos":"adjective", "gloss":"indigo", "def":"indigo; low-light blue/violet", "en":["indigo"], "source":"derived from po + mlEGE + Gedil, 2026-10-04", "status":"derived"},
 "sabGedil": {"pos":"adjective", "gloss":"purple", "def":"purple; nonspectral red + blue/violet mixture", "en":["purple"], "source":"derived from sab + Gedil, 2026-10-04", "status":"derived"},
 "akalE": {"pos":"pos", "gloss":"here", "def":"here "},
-"mag": {"pos":"pos", "gloss":"floor", "def":"base/floor/foundation "},
+"mag": {"pos":"pos", "gloss":"floor", "def":"base/floor/foundation ", "en":["floor","base","foundation","deck"], "extension_note":"In spacecraft interiors, the recovered word for floor/base is used provisionally for a walkable ship deck. This specialised deck sense is not independently attested.", "extension_source":"Marain dictionary extension (2026-10-27)"},
 "samOn": {"pos":"pos", "gloss":"warm", "def":"warm "},
 "kataH": {"pos":"pos", "gloss":"direction-right", "def":"right (direction) "},
 "meEGket": {"pos":"pos", "gloss":"DNA", "def":"DNA "},
@@ -465,4 +465,7 @@ var dict = {
 "sAnowetsEkE": {"pos":"adverb","gloss":"still","def":"still; continuing over time (proposed; sense not attested)","en":["still","continuing"],"status":"proposed-extension","source":"Marain ship-name translation v0.4 (2026-10-21)","derivation":"sAno (exist) + wetsEkE (after)","note":"Approximate continuative adverb, not proof of grammatical aspect"},
 "heHrAspatsmAHrAtE": {"pos":"adjective","gloss":"nonwar","def":"non-war or non-military; only a rough approximation to civilian","en":["non-military"],"status":"proposed-extension","source":"Marain ship-name translation v0.4 (2026-10-21)","derivation":"heH (no/not) + rAspatsmAHrAtE (war)","note":"Not an exact social or legal equivalent of civilian"},
 "bOraH": {"pos":"noun","gloss":"mess","def":"mess; shambles (adapted from Scottish Gaelic bùrach; proposed borrowing)","en":["mess","shambles"],"status":"proposed-extension","source":"Marain poetic register v0.4 (2026-10-21), Scottish Gaelic bùrach in Am Faclair Beag","derivation":"Gaelic bùrach adapted to Marain phoneme/glyph repertoire","note":"Not a verified idiomatic translation of the Culture expression heavy messing"}
+,
+"prenfwEstheldjt": {"pos":"noun","gloss":"hangar","def":"spacecraft hangar; a building or structure for housing and sheltering spacecraft (proposed compound)","en":["hangar","spacecraft hangar","ship hangar"],"status":"proposed-extension","source":"Marain dictionary extension (2026-10-27); reconstructed from established vocabulary","derivation":"pren (spaceship) + fwEst (container) + heldjt (structure/building)","note":"Transparent proposed compound, not attested in Iain M. Banks or the recovered lessons; specifically spacecraft hangars."},
+"fwEstzesO": {"pos":"noun","gloss":"bay","def":"interior bay; a designated compartment or bounded working space in a ship or hangar (proposed compound)","en":["bay","hangar bay","ship bay","interior bay"],"status":"proposed-extension","source":"Marain dictionary extension (2026-10-27); reconstructed from established vocabulary","derivation":"fwEst (container) + zesO (place)","note":"Only the architectural/interior sense of bay; a coastal or geographic bay is not established by this entry."}
 };
