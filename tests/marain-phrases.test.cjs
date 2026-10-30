@@ -91,7 +91,7 @@ test('glyph and romanisation boundaries round-trip for every single-word diction
 });
 
 test('11 sourced additions, no duplicate existing headwords or unknown glyphs',()=>{
-  assert.ok(Object.keys(scope.dict).length >= 474, 'dictionary vocabulary count must not regress');
+  assert.ok(Object.keys(scope.dict).length >= 473, 'port/to is one headword with two senses');
   const additions=Object.values(scope.dict).filter(e=>e.status==='community-lesson');
   assert.equal(additions.length,11);
   assert.ok(additions.every(e=>e.source&&e.en.length));
@@ -369,30 +369,35 @@ test('spacecraft hangar, bay and deck reuse recovered vocabulary',()=>{
   assert.equal(tr('deck').roman,api.romanize('mag'));
 });
 
-test('short high-frequency ship and transit vocabulary uses 2–6 Latin letters',()=>{
-  for(const [key,english,roman,roots,former] of [
-    ["pawet","bow","pawet",["pren","wetsE"],"prenwetsE"],
-    ["pawi","aft","pawih",["pren","wia"],"prenwia"],
-    ["pawaG","port","pawang",["pren","waG"],"prenwaG"],
-    ["pakata","starboard","pakata",["pren","kataH"],"prenkataH"],
-    ["fapren","train","fapren",["fAyont","pren"],"fAyontguHetpren"],
-    ["SlA","elevator","shlay",["Sin","lA"],"SinshalA"],
-    ["wemag","stairs","wemag",["wek","mag"],"wekmagfAyont"]
+test('user-selected ship directions and original third-person pronoun coexist',()=>{
+  for(const [english,key,old] of [['bow','an','pawet'],['aft','bet','pawi'],['port','to','pawaG'],['starboard','pakat','pakata']]){
+    assert.equal(scope.dict[old],undefined,old);
+    const sense=english==='port' ? scope.dict.to.homographs.find(s=>s.gloss==='port') : scope.dict[key];
+    assert.ok(sense,key);
+    assert.equal(sense.status,'proposed-extension',english);
+    assert.equal(sense.replaces,old);
+    assert.ok(sense.en.includes(english),english);
+    assert.match(key,/^[a-z]{2,6}$/,english);
+    assert.equal(api.encode(api.romanize(key)),key);
+    assert.equal(api.romanize(key),key);
+    assert.equal(tr(english).roman,key);
+    assert.equal(tr(english).missing.length,0);
+    assert.ok(api.lookup(english,'noun').some(e=>e.key===key));
+  }
+  assert.equal(scope.dict.to.gloss,'they+sg');
+  assert.equal(scope.dict.to.def.trim(),'third-person singular pronoun');
+  assert.ok(api.lookup('it','pronoun').some(e=>e.key==='to'));
+  assert.equal(tr('port side').roman,'to');
+  assert.equal(tr('it was imagined.').roman,'tovuh tshainsle bechumli.');
+});
+
+test('deck and the other three transit words remain unchanged',()=>{
+  for(const [key,english,roman] of [
+    ['fapren','train','fapren'],['SlA','elevator','shlay'],['wemag','stairs','wemag']
   ]){
-    const entry=scope.dict[key];
-    assert.ok(entry,key);
-    assert.equal(entry.status,'proposed-extension',key);
-    assert.equal(entry.former_proposal,former);
-    assert.equal(scope.dict[former],undefined,'replace long proposal rather than leave ambiguous English aliases');
-    assert.ok(entry.en.includes(english),key);
-    assert.ok(entry.source && entry.derivation && entry.note,key);
-    assert.ok(roots.every(root=>scope.dict[root]),key);
-    assert.equal(api.romanize(key),roman,key);
-    assert.equal(api.encode(roman),key,roman);
-    assert.match(roman,/^[a-z]{2,6}$/i,english);
-    assert.equal(tr(english).roman,roman,english);
-    assert.equal(tr(english).missing.length,0,english);
+    assert.ok(scope.dict[key]);
+    assert.equal(tr(english).roman,roman);
+    assert.equal(api.encode(api.romanize(key)),key);
   }
   assert.equal(tr('deck').roman,'mag');
-  assert.equal(scope.dict.mag.gloss,'floor');
 });

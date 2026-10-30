@@ -766,8 +766,12 @@
       return;
     }
 
-    var pos = entry.pos || "";
-    var def = entry.def || entry.gloss || "";
+    var additionalSenses = Array.isArray(entry.homographs) ? entry.homographs : [];
+    var pos = [entry.pos || ""].concat(additionalSenses.map(function (sense) { return sense.pos || ""; }))
+      .filter(Boolean).join(" / ");
+    var def = [entry.def || entry.gloss || ""].concat(additionalSenses.map(function (sense) {
+      return sense.def || sense.gloss || "";
+    })).filter(Boolean).join(" / ");
     var ipa = IPA(displayMarain);
 
     if ($("#dictmarain").length) {
@@ -832,6 +836,14 @@ function entryEnglishTerms(entry) {
     } else {
       terms.push(entry.en);
     }
+  }
+
+  if (Array.isArray(entry.homographs)) {
+    entry.homographs.forEach(function (sense) {
+      if (sense.en) terms = terms.concat(sense.en);
+      if (sense.def) terms.push(sense.def);
+      if (sense.gloss) terms.push(sense.gloss);
+    });
   }
 
   if (entry.def) {

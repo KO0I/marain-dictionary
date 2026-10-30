@@ -159,6 +159,12 @@
       }
     });
   });
+  // Register noun homographs separately; keep existing pronoun mappings intact.
+  Object.entries(dict).forEach(([key, entry]) => {
+    for (const sense of entry.homographs || []) {
+      for (const term of sense.en || []) add(term, key, sense.pos || 'noun');
+    }
+  });
   Object.entries(pronouns).forEach(([term,key]) => { lex.set(term,[{key,pos:'pronoun'}]); });
   // Do not turn the impersonal pronoun into the number one.
   ['zero','one','two','three','four','five','six','seven'].forEach((w,i) => lex.set(w,[{key:['nheH','sto','hre','dosa','Lami','ko','gol','ljwA'][i],pos:'number'}]));
