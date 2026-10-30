@@ -91,7 +91,7 @@ test('glyph and romanisation boundaries round-trip for every single-word diction
 });
 
 test('11 sourced additions, no duplicate existing headwords or unknown glyphs',()=>{
-  assert.ok(Object.keys(scope.dict).length >= 473, 'port/to is one headword with two senses');
+  assert.ok(Object.keys(scope.dict).length >= 474, 'port/toh and pronoun/to are distinct headwords');
   const additions=Object.values(scope.dict).filter(e=>e.status==='community-lesson');
   assert.equal(additions.length,11);
   assert.ok(additions.every(e=>e.source&&e.en.length));
@@ -369,25 +369,32 @@ test('spacecraft hangar, bay and deck reuse recovered vocabulary',()=>{
   assert.equal(tr('deck').roman,api.romanize('mag'));
 });
 
-test('user-selected ship directions and original third-person pronoun coexist',()=>{
-  for(const [english,key,old] of [['bow','an','pawet'],['aft','bet','pawi'],['port','to','pawaG'],['starboard','pakat','pakata']]){
+test('user-selected ship directions keep port distinct from the third-person pronoun',()=>{
+  for(const [english,key,roman,old] of [
+    ['bow','an','an','pawet'],
+    ['aft','bet','bet','pawi'],
+    ['port','toh',"to'h",'pawaG'],
+    ['starboard','pakat','pakat','pakata']
+  ]){
     assert.equal(scope.dict[old],undefined,old);
-    const sense=english==='port' ? scope.dict.to.homographs.find(s=>s.gloss==='port') : scope.dict[key];
-    assert.ok(sense,key);
-    assert.equal(sense.status,'proposed-extension',english);
-    assert.equal(sense.replaces,old);
-    assert.ok(sense.en.includes(english),english);
-    assert.match(key,/^[a-z]{2,6}$/,english);
-    assert.equal(api.encode(api.romanize(key)),key);
-    assert.equal(api.romanize(key),key);
-    assert.equal(tr(english).roman,key);
+    const entry=scope.dict[key];
+    assert.ok(entry,key);
+    assert.equal(entry.status,'proposed-extension',english);
+    assert.ok(entry.en.includes(english));
+    assert.equal(api.romanize(key),roman);
+    assert.equal(api.encode(roman),key);
+    assert.equal(tr(english).roman,roman);
     assert.equal(tr(english).missing.length,0);
     assert.ok(api.lookup(english,'noun').some(e=>e.key===key));
   }
   assert.equal(scope.dict.to.gloss,'they+sg');
   assert.equal(scope.dict.to.def.trim(),'third-person singular pronoun');
+  assert.equal(scope.dict.to.homographs,undefined);
+  assert.equal(scope.dict.toh.romanization,"to'h");
+  assert.equal(api.encode('To’h'),'toh');
+  assert.equal(api.romanize('tohva'),"to'hva");
   assert.ok(api.lookup('it','pronoun').some(e=>e.key==='to'));
-  assert.equal(tr('port side').roman,'to');
+  assert.equal(tr('port side').roman,"to'h");
   assert.equal(tr('it was imagined.').roman,'tovuh tshainsle bechumli.');
 });
 

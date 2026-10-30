@@ -322,6 +322,16 @@
 
   function tdMToRom(s) {
     s = String(s || "");
+    // Preferred spellings preserve user-selected romanization boundaries.
+    var d = getDict();
+    var preferred = Object.keys(d).find(function (stem) {
+      if (!d[stem] || !d[stem].romanization || s.slice(0, stem.length) !== stem) return false;
+      return ["", "u", "yu", "va", "vil", "sa", "lE", "j", "vu"].indexOf(s.slice(stem.length)) !== -1;
+    });
+    if (preferred) {
+      var suffix = s.slice(preferred.length);
+      return d[preferred].romanization + (suffix ? tdMToRom(suffix) : "");
+    }
     var out = "";
 
     for (var i = 0; i < s.length; i++) {
@@ -765,13 +775,10 @@
       clearDictResult(query, m);
       return;
     }
+    if (entry.romanization) displayRoman = entry.romanization;
 
-    var additionalSenses = Array.isArray(entry.homographs) ? entry.homographs : [];
-    var pos = [entry.pos || ""].concat(additionalSenses.map(function (sense) { return sense.pos || ""; }))
-      .filter(Boolean).join(" / ");
-    var def = [entry.def || entry.gloss || ""].concat(additionalSenses.map(function (sense) {
-      return sense.def || sense.gloss || "";
-    })).filter(Boolean).join(" / ");
+    var pos = entry.pos || "";
+    var def = entry.def || entry.gloss || "";
     var ipa = IPA(displayMarain);
 
     if ($("#dictmarain").length) {
@@ -836,14 +843,6 @@ function entryEnglishTerms(entry) {
     } else {
       terms.push(entry.en);
     }
-  }
-
-  if (Array.isArray(entry.homographs)) {
-    entry.homographs.forEach(function (sense) {
-      if (sense.en) terms = terms.concat(sense.en);
-      if (sense.def) terms.push(sense.def);
-      if (sense.gloss) terms.push(sense.gloss);
-    });
   }
 
   if (entry.def) {

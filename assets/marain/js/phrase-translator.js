@@ -10,7 +10,14 @@
   const normal = s => String(s || '').normalize('NFKC').replace(/[’‘]/g, "'").toLowerCase().trim().replace(/\s+/g, ' ');
   const words = s => normal(s).match(/[-+]?\d+(?:[.,]\d+)*|[\p{L}]+(?:['-][\p{L}\p{N}]+)*/gu) || [];
   const units = Object.entries(alpha).map(([key, a]) => [a[1], key]).sort((a, b) => b[0].length - a[0].length);
+  // Optional dictionary-specific romanization (e.g. user-selected to'h).
+  const preferredRoman = Object.entries(dict)
+    .filter(([, entry]) => typeof entry.romanization === 'string' && entry.romanization)
+    .map(([key, entry]) => [key, entry.romanization])
+    .sort((a, b) => b[0].length - a[0].length);
   function encode(roman) {
+    // Roman lettering may arrive capitalized, with straight or curly apostrophes.
+    roman = String(roman || '').replace(/[’‘]/g, "'").toLowerCase();
     let out = '';
     for (let i = 0; i < roman.length;) {
       if (roman[i] === "'") { i++; continue; }
@@ -28,6 +35,13 @@
       const marker="'"+suffix;
       if (key.endsWith(marker) && key.length>marker.length)
         return romanize(key.slice(0,-marker.length))+"'"+spelling;
+    }
+    // Honor preferred word spelling, also when a regular noun case suffix is attached.
+    for (const [stem, spelling] of preferredRoman) {
+      if (!key.startsWith(stem)) continue;
+      const suffix = key.slice(stem.length);
+      if (!['', 'u', 'yu', 'va', 'vil', 'sa', 'lE', 'j', 'vu'].includes(suffix)) continue;
+      return spelling + (suffix ? romanize(suffix) : '');
     }
     let out = '', prefix = '';
     for (const ch of key) {
@@ -158,12 +172,6 @@
         add(plural, key, pos);
       }
     });
-  });
-  // Register noun homographs separately; keep existing pronoun mappings intact.
-  Object.entries(dict).forEach(([key, entry]) => {
-    for (const sense of entry.homographs || []) {
-      for (const term of sense.en || []) add(term, key, sense.pos || 'noun');
-    }
   });
   Object.entries(pronouns).forEach(([term,key]) => { lex.set(term,[{key,pos:'pronoun'}]); });
   // Do not turn the impersonal pronoun into the number one.
