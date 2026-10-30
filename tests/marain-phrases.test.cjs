@@ -372,24 +372,30 @@ test('spacecraft hangar, bay and deck reuse recovered vocabulary',()=>{
   assert.equal(tr('deck').roman,api.romanize('mag'));
 });
 
-test('ship directions and transit vocabulary are explicitly proposed compounds',()=>{
-  for(const [key,english,roots] of [
-    ["prenwetsE","bow",["pren","wetsE"]],
-    ["prenwia","aft",["pren","wia"]],
-    ["prenwaG","port",["pren","waG"]],
-    ["prenkataH","starboard",["pren","kataH"]],
-    ["fAyontguHetpren","train",["fAyont","guHetpren"]],
-    ["SinshalA","elevator",["Sin","sha","lA"]],
-    ["wekmagfAyont","stairs",["wek","mag","fAyont"]]
+test('short high-frequency ship and transit vocabulary uses 2–6 Latin letters',()=>{
+  for(const [key,english,roman,roots,former] of [
+    ["pawet","bow","pawet",["pren","wetsE"],"prenwetsE"],
+    ["pawi","aft","pawih",["pren","wia"],"prenwia"],
+    ["pawaG","port","pawang",["pren","waG"],"prenwaG"],
+    ["pakata","starboard","pakata",["pren","kataH"],"prenkataH"],
+    ["fapren","train","fapren",["fAyont","pren"],"fAyontguHetpren"],
+    ["SlA","elevator","shlay",["Sin","lA"],"SinshalA"],
+    ["wemag","stairs","wemag",["wek","mag"],"wekmagfAyont"]
   ]){
     const entry=scope.dict[key];
+    assert.ok(entry,key);
     assert.equal(entry.status,'proposed-extension',key);
+    assert.equal(entry.former_proposal,former);
+    assert.equal(scope.dict[former],undefined,'replace long proposal rather than leave ambiguous English aliases');
     assert.ok(entry.en.includes(english),key);
     assert.ok(entry.source && entry.derivation && entry.note,key);
     assert.ok(roots.every(root=>scope.dict[root]),key);
-    assert.equal(api.encode(api.romanize(key)),key);
-    assert.equal(tr(english).roman,api.romanize(key),english);
+    assert.equal(api.romanize(key),roman,key);
+    assert.equal(api.encode(roman),key,roman);
+    assert.match(roman,/^[a-z]{2,6}$/i,english);
+    assert.equal(tr(english).roman,roman,english);
+    assert.equal(tr(english).missing.length,0,english);
   }
-  assert.equal(tr('deck').roman,api.romanize('mag'));
+  assert.equal(tr('deck').roman,'mag');
   assert.equal(scope.dict.mag.gloss,'floor');
 });
