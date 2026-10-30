@@ -371,3 +371,25 @@ test('spacecraft hangar, bay and deck reuse recovered vocabulary',()=>{
   assert.ok(scope.dict.mag.extension_note.includes('not independently attested'));
   assert.equal(tr('deck').roman,api.romanize('mag'));
 });
+
+test('ship directions and transit vocabulary are explicitly proposed compounds',()=>{
+  for(const [key,english,roots] of [
+    ["prenwetsE","bow",["pren","wetsE"]],
+    ["prenwia","aft",["pren","wia"]],
+    ["prenwaG","port",["pren","waG"]],
+    ["prenkataH","starboard",["pren","kataH"]],
+    ["fAyontguHetpren","train",["fAyont","guHetpren"]],
+    ["SinshalA","elevator",["Sin","sha","lA"]],
+    ["wekmagfAyont","stairs",["wek","mag","fAyont"]]
+  ]){
+    const entry=scope.dict[key];
+    assert.equal(entry.status,'proposed-extension',key);
+    assert.ok(entry.en.includes(english),key);
+    assert.ok(entry.source && entry.derivation && entry.note,key);
+    assert.ok(roots.every(root=>scope.dict[root]),key);
+    assert.equal(api.encode(api.romanize(key)),key);
+    assert.equal(tr(english).roman,api.romanize(key),english);
+  }
+  assert.equal(tr('deck').roman,api.romanize('mag'));
+  assert.equal(scope.dict.mag.gloss,'floor');
+});
