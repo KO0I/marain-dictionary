@@ -48,6 +48,10 @@ permalink: /marain/
 
 ## Translation
 
+The dictionary includes the November 2026 vocabulary expansion. New coinages are marked **provisional** in their definitions; they are proposals, not recovered canon. Existing entries and their sources are retained. The glyph-key spelling for “or” is now <span class="marain">Hay</span> (`Hay`, approximately *chay* in the site's romanization), replacing `HAyep`.
+
+[Vocabulary and provenance (JSON)]({{ '/assets/marain/expansion/draft-v1.json' | relative_url }}) · [Morpheme ledger (CSV)]({{ '/assets/marain/expansion/morpheme-ledger.csv' | relative_url }})
+
 <div class="marain-page">
 
 <section id="base-conversion" class="dictionary-panel" aria-labelledby="base-heading">
@@ -343,3 +347,4 @@ permalink: /marain/
 
 
 </div>
+

@@ -208,6 +208,10 @@
   for (const [key,v] of Object.entries(verbs)) { v.forms.sort((a,b)=>b.length-a.length); for (const form of v.forms) add(form,key,'verb'); }
   function lookup(term, pos) {
     let entries = lex.get(normal(term)) || [];
+    // Existing vocabulary keeps its preferred meaning when a draft proposes
+    // another word for the same English term. Genuine old ambiguities remain.
+    const existing = entries.filter(e => !dict[e.key]?.expansion_version);
+    if (existing.length) entries = existing;
     if (pos === 'nominal') entries = entries.filter(e => e.pos === 'noun' || e.pos === 'pronoun');
     else if (pos) entries = entries.filter(e => e.pos === pos);
     return [...new Map(entries.map(e => [e.key,e])).values()];
@@ -217,6 +221,10 @@
     ctx.missing.push(en); ctx.alignment.push({english:en,marain:UNKNOWN,reason}); return UNKNOWN;
   }
   function emit(key, en, ctx, role='abs', reason='Dictionary match') {
+    if (dict[key] && dict[key].expansion_version) {
+      ctx.notes.push('Vocabulary expansion draft-v1: '+en+' uses a provisional coinage, not an attested word.');
+      reason += '; provisional vocabulary (draft-v1)';
+    }
     const formed = inflect(key,role);
     ctx.alignment.push({english:en,marain:romanize(formed),reason:role === 'abs' ? reason : reason+'; '+role});
     return formed;
@@ -585,3 +593,4 @@
   }
   return {translate,romanize,encode,inflect,lookup,numberKey,hypotheticalRoman,hypothetical,predicateSuffix,poeticCadence,reversePoeticCadence,poeticMutate,reversePoeticMutation};
 }));
+

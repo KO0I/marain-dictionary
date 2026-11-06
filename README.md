@@ -23,6 +23,15 @@ system and network.
 
 ## Site integration
 
+The November 2026 draft vocabulary is reconciled into `dict.js`, retaining
+current definitions and provenance. The supplied historical merged preview is
+not used. Run `node scripts/integrate-expansion.mjs` to replay the import from
+`assets/marain/expansion/draft-v1.json`; it is idempotent and rejects conflicting
+meanings before writing. The existing `EnAG` entry is preserved. The import adds
+926 lexemes and replaces `HAyep` with the user-selected `Hay`. The supplied
+`place`/`put` pair shares one entry with both English aliases. Coinages retain
+their status, domain, segmentation and notes, and remain visibly provisional.
+
 KO0I/KO0I.github.io pins this repository at `tools/marain-dictionary`. Its build
 overlays `_pages/marain.markdown`, `_pages/lesson-rules.markdown`,
 `_includes/marain-tts.html`, and `assets/marain/` into a temporary source tree.
@@ -55,3 +64,4 @@ source commit, then rename the extracted branch to `main`. Relevant authorship
 and commit messages survive; filtered commit hashes necessarily differ.
 The pre-existing repository's initial README commit is retained through a
 merge with `--allow-unrelated-histories`. The site repository history is intact.
+
